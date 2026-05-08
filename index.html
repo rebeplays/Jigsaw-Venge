@@ -509,6 +509,22 @@
       border: 1px solid rgba(255,59,59,0.2); margin-bottom: 20px;
       display: flex; align-items: center; justify-content: center; font-size: 6rem;
       min-height: 300px; object-fit: contain; overflow: hidden;
+      position: relative;
+    }
+    .gift-text-overlay {
+      width: 100%;
+      text-align: center;
+      color: #ff4d4d;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-shadow: 0 0 16px rgba(255, 77, 77, 0.9);
+      margin-top: 12px;
+      padding: 12px 14px 8px;
+      border-radius: 12px;
+      background: rgba(255, 77, 77, 0.05);
+      border: 1px solid rgba(255, 77, 77, 0.2);
+      pointer-events: none;
     }
     @media (max-width: 480px) { .modal-image { min-height: 250px; font-size: 4rem; margin-bottom: 16px; border-radius: 12px; } }
     .modal-image img {
@@ -810,7 +826,7 @@
      JIGSAW <span>VENGE</span>
     </div>
     <div class="footer-copy" id="footerCopy">
-     © 2026 Jigsaw Venge. All rights reserved.
+     © 2026 Jigsaw Venge. All rights reserved. <br> Created by: Rebe Plays (@rebeeee_plays)
     </div>
    </footer>
   </div>
@@ -830,6 +846,7 @@
   <div class="modal" id="giftModal">
    <div class="modal-content" style="max-width: 600px;"><button class="modal-close" onclick="closeGiftModal()"><i data-lucide="x"></i></button>
     <div class="modal-image" id="giftImage" style="min-height: 400px;"></div>
+    <div class="gift-text-overlay" id="giftTextOverlay">Direct Gifts Here, Thank you</div>
    </div>
   </div>
   <script>
@@ -896,9 +913,9 @@ function openGiftModal() {
   const giftImage = document.getElementById('giftImage');
   giftImage.innerHTML = '';
   giftImage.classList.remove('landscape', 'portrait', 'square');
-  
+
   const img = document.createElement('img');
-  img.src = 'https://imgur.com/6LfaxTH.png';
+  img.src = 'https://i.imgur.com/6LfaxTH.png';
   img.alt = 'Gift';
   img.loading = 'lazy';
   img.onerror = function() {
@@ -907,48 +924,45 @@ function openGiftModal() {
     giftImage.textContent = '🎁';
     giftImage.style.fontSize = '8rem';
   };
-  
+
   giftImage.appendChild(img);
   giftImage.classList.add('landscape');
+
+  const giftText = document.getElementById('giftTextOverlay');
+  if (giftText) {
+    giftText.textContent = 'Direct Gifts Here, Thank you';
+  }
   giftImage.style.background = 'rgba(0,0,0,0.3)';
   document.getElementById('giftModal').classList.add('active');
 }
-
-function closeGiftModal() {
-  document.getElementById('giftModal').classList.remove('active');
-}
-
-document.getElementById('giftModal').addEventListener('click', (e) => {
-  if (e.target.id === 'giftModal') closeGiftModal();
-});
 
 function openModal(index) {
   const weapon = weapons[index];
   const modalImage = document.getElementById('modalImage');
   modalImage.innerHTML = '';
   modalImage.classList.remove('landscape', 'portrait', 'square');
-  
-  if (weapon.image) {
-    const img = document.createElement('img');
-    img.src = weapon.image;
-    img.alt = weapon.name;
-    img.loading = 'lazy';
-    img.onerror = function() {
+
+  if (weapon && weapon.image) {
+    const weaponImg = document.createElement('img');
+    weaponImg.src = weapon.image;
+    weaponImg.alt = weapon.name;
+    weaponImg.loading = 'lazy';
+    weaponImg.onerror = function() {
       console.error('Image failed to load:', this.src);
       this.style.display = 'none';
       modalImage.textContent = '🔫';
       modalImage.style.fontSize = '6rem';
     };
-    modalImage.appendChild(img);
+    modalImage.appendChild(weaponImg);
     modalImage.classList.add('landscape');
   } else {
     modalImage.textContent = '🔫';
     modalImage.style.fontSize = '6rem';
     modalImage.classList.add('landscape');
   }
-  
-  document.getElementById('modalTitle').textContent = weapon.name;
-  document.getElementById('modalCategory').textContent = weapon.cat.toUpperCase();
+
+  document.getElementById('modalTitle').textContent = weapon ? weapon.name : 'Weapon Name';
+  document.getElementById('modalCategory').textContent = weapon ? weapon.cat.toUpperCase() : 'CATEGORY';
   document.getElementById('weaponModal').classList.add('active');
 }
 
@@ -956,8 +970,16 @@ function closeModal() {
   document.getElementById('weaponModal').classList.remove('active');
 }
 
+function closeGiftModal() {
+  document.getElementById('giftModal').classList.remove('active');
+}
+
 document.getElementById('weaponModal').addEventListener('click', (e) => {
   if (e.target.id === 'weaponModal') closeModal();
+});
+
+document.getElementById('giftModal').addEventListener('click', (e) => {
+  if (e.target.id === 'giftModal') closeGiftModal();
 });
 
 function copyToClipboard(evt, targetOrText) {
