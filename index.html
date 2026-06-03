@@ -237,24 +237,49 @@
     @media (max-width: 700px) { .settings-grid { grid-template-columns: 1fr; gap: 10px; } }
     @media (max-width: 480px) { .settings-grid { grid-template-columns: 1fr; gap: 12px; } }
 
-    .gyro-section {
+    .gyro-dropdown-section {
       margin: 32px 0 0;
+      border: 1px solid rgba(255,59,59,0.18);
+      border-radius: 24px;
+      background: rgba(10,10,10,0.95);
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.2);
     }
-    .gyro-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    .gyro-dropdown-section summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 0.95rem;
     }
-    .gyro-line {
+    .gyro-dropdown-section summary::-webkit-details-marker { display: none; }
+    .gyro-summary-title { display: flex; align-items: center; gap: 10px; }
+    .gyro-summary-title .gyro-line {
       width: 4px; height: 28px; background: var(--red); border-radius: 4px;
       box-shadow: 0 0 12px rgba(255,59,59,0.35);
     }
-    .gyro-title {
-      font-size: 1rem; font-weight: 800; letter-spacing: 1.8px;
-      text-transform: uppercase; color: #fff;
+    .gyro-dropdown-section summary .gyro-toggle-icon {
+      width: 28px; height: 28px; border-radius: 999px;
+      display: grid; place-items: center;
+      background: rgba(255,59,59,0.15); color: var(--red);
+      transition: transform 0.2s ease;
+      font-size: 0.95rem;
     }
-    .gyro-grid {
+    .gyro-dropdown-section[open] summary .gyro-toggle-icon { transform: rotate(45deg); }
+    .gyro-dropdown-content { padding: 20px; }
+    .gyro-grid, .gyro-fire-grid {
       display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
     }
-    @media (max-width: 900px) { .gyro-grid { grid-template-columns: 1fr; gap: 14px; } }
+    @media (max-width: 900px) { .gyro-grid, .gyro-fire-grid { grid-template-columns: 1fr; gap: 14px; } }
     .gyro-card {
       border-radius: 18px; padding: 18px; background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,59,59,0.14); box-shadow: 0 16px 40px rgba(0,0,0,0.16);
@@ -265,9 +290,10 @@
     }
     .gyro-progress-wrapper { display: flex; flex-direction: column; gap: 10px; }
     .gyro-progress-label {
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: flex-end; align-items: center;
       font-size: 0.72rem; color: #ccc; letter-spacing: 0.8px;
     }
+    .gyro-progress-label span:first-child { display: none; }
     .gyro-progress-bar {
       width: 100%; height: 12px; overflow: hidden; border-radius: 999px;
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,59,59,0.12);
@@ -786,112 +812,228 @@
        </article>
       </div>
      </div>
-     <div class="gyro-section">
-      <div class="gyro-header">
-       <div class="gyro-line"></div>
-       <h3 class="gyro-title">GYROSCOPE SENSITIVITY</h3>
+     <details class="gyro-dropdown-section" open>
+      <summary>
+       <div class="gyro-summary-title">
+        <div class="gyro-line"></div>
+        <span class="gyro-title">GYROSCOPE SENSITIVITY</span>
+       </div>
+       <div class="gyro-toggle-icon">+</div>
+      </summary>
+      <div class="gyro-dropdown-content">
+       <div class="gyro-grid">
+        <article class="gyro-card">
+         <div class="gyro-card-title">Gyroscope Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Gyroscope Sensitivity</span><span>80 (OFF)</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:26.67%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Steering Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Steering Sensitivity</span><span>80</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:26.67%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Red Dot/Holo Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Red Dot/Holo Sensitivity</span><span>80</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:26.67%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">ADS Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>ADS Sensitivity</span><span>80</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:26.67%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Tactical Scope Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Tactical Scope Sensitivity</span><span>25</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:8.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Sniper Scope Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Sniper Scope Sensitivity</span><span>0</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:0%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Third Person Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Third Person Sensitivity</span><span>90</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:30%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">3x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>3x Tactical Scope</span><span>25</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:8.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">4x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>4x Tactical Scope</span><span>25</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:8.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">6x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>6x Tactical Scope</span><span>15</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:5%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">8x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>8x Tactical Scope</span><span>15</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:5%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Vertical Turning Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Vertical Turning Sensitivity</span><span>100</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Ground Vehicles Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Ground Vehicles Sensitivity</span><span>80</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:26.67%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Air Vehicles Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Air Vehicles Sensitivity</span><span>80</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:26.67%;"></div></div>
+         </div>
+        </article>
+       </div>
       </div>
-      <div class="gyro-grid">
-       <article class="gyro-card">
-        <div class="gyro-card-title">Gyroscope Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Gyroscope Sensitivity</span><span>80 (OFF)</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Steering Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Steering Sensitivity</span><span>80</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Red Dot/Holo Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Red Dot/Holo Sensitivity</span><span>80</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">ADS Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>ADS Sensitivity</span><span>80</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Tactical Scope Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Tactical Scope Sensitivity</span><span>25</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:25%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Sniper Scope Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Sniper Scope Sensitivity</span><span>0</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:0%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Third Person Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Third Person Sensitivity</span><span>90</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:90%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">3x Tactical Scope</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>3x Tactical Scope</span><span>25</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:25%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">4x Tactical Scope</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>4x Tactical Scope</span><span>25</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:25%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">6x Tactical Scope</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>6x Tactical Scope</span><span>15</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:15%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">8x Tactical Scope</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>8x Tactical Scope</span><span>15</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:15%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Vertical Turning Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Vertical Turning Sensitivity</span><span>100</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:100%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Ground Vehicles Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Ground Vehicles Sensitivity</span><span>80</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
-        </div>
-       </article>
-       <article class="gyro-card">
-        <div class="gyro-card-title">Air Vehicles Sensitivity</div>
-        <div class="gyro-progress-wrapper">
-         <div class="gyro-progress-label"><span>Air Vehicles Sensitivity</span><span>80</span></div>
-         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
-        </div>
-       </article>
+     </details>
+     <details class="gyro-dropdown-section" open>
+      <summary>
+       <div class="gyro-summary-title">
+        <div class="gyro-line"></div>
+        <span class="gyro-title">GYROSCOPE FIRING SENSITIVITY</span>
+       </div>
+       <div class="gyro-toggle-icon">+</div>
+      </summary>
+      <div class="gyro-dropdown-content">
+       <div class="gyro-fire-grid">
+        <article class="gyro-card">
+         <div class="gyro-card-title">Gyroscope Fire Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Gyroscope Fire Sensitivity</span><span>100 (OFF)</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Steering Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Steering Sensitivity</span><span>100</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Red Dot/Holo Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Red Dot/Holo Sensitivity</span><span>75</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:25%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">ADS Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>ADS Sensitivity</span><span>100</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Tactical Scope Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Tactical Scope Sensitivity</span><span>15</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:5%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Sniper Scope Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Sniper Scope Sensitivity</span><span>0</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:0%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Third Person Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Third Person Sensitivity</span><span>100</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">3x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>3x Tactical Scope</span><span>15</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:5%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">4x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>4x Tactical Scope</span><span>15</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:5%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">6x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>6x Tactical Scope</span><span>20</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:6.67%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">8x Tactical Scope</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>8x Tactical Scope</span><span>15</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:5%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Vertical Turning Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Vertical Turning Sensitivity</span><span>100</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Ground Vehicles Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Ground Vehicles Sensitivity</span><span>100</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+        <article class="gyro-card">
+         <div class="gyro-card-title">Air Vehicles Sensitivity</div>
+         <div class="gyro-progress-wrapper">
+          <div class="gyro-progress-label"><span>Air Vehicles Sensitivity</span><span>100</span></div>
+          <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:33.33%;"></div></div>
+         </div>
+        </article>
+       </div>
       </div>
-     </div>
+     </details>
      <div class="fov-header">
       <div class="fov-line"></div>
       <h3 class="fov-title">FIELD OF VIEW</h3>
