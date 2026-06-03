@@ -237,6 +237,52 @@
     @media (max-width: 700px) { .settings-grid { grid-template-columns: 1fr; gap: 10px; } }
     @media (max-width: 480px) { .settings-grid { grid-template-columns: 1fr; gap: 12px; } }
 
+    .gyro-section {
+      margin: 32px 0 0;
+    }
+    .gyro-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    }
+    .gyro-line {
+      width: 4px; height: 28px; background: var(--red); border-radius: 4px;
+      box-shadow: 0 0 12px rgba(255,59,59,0.35);
+    }
+    .gyro-title {
+      font-size: 1rem; font-weight: 800; letter-spacing: 1.8px;
+      text-transform: uppercase; color: #fff;
+    }
+    .gyro-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+    }
+    @media (max-width: 900px) { .gyro-grid { grid-template-columns: 1fr; gap: 14px; } }
+    .gyro-card {
+      border-radius: 18px; padding: 18px; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,59,59,0.14); box-shadow: 0 16px 40px rgba(0,0,0,0.16);
+    }
+    .gyro-card-title {
+      font-size: 0.78rem; font-weight: 800; letter-spacing: 1.2px;
+      margin-bottom: 12px; color: #fff; text-transform: uppercase;
+    }
+    .gyro-progress-wrapper { display: flex; flex-direction: column; gap: 10px; }
+    .gyro-progress-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.72rem; color: #ccc; letter-spacing: 0.8px;
+    }
+    .gyro-progress-bar {
+      width: 100%; height: 12px; overflow: hidden; border-radius: 999px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,59,59,0.12);
+    }
+    .gyro-progress-fill {
+      width: var(--progress, 0%); height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,59,59,0.95), rgba(255,111,111,0.7));
+      transform: scaleX(0); transform-origin: left; animation: fillBar 1.4s ease-out forwards;
+      box-shadow: 0 0 16px rgba(255,59,59,0.25);
+    }
+    @keyframes fillBar {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
     .settings-card {
       border-radius: 12px; padding: 16px; background: var(--panel);
       border: 2px solid rgba(255,59,59,0.15); transition: all 0.3s ease;
@@ -586,6 +632,15 @@
       <div class="filter-pill" onclick="setFilter(this, 'ar')">
        AR
       </div>
+      <div class="filter-pill" onclick="setFilter(this, 'lmg')">
+       LMG
+      </div>
+      <div class="filter-pill" onclick="setFilter(this, 'smg')">
+       SMG
+      </div>
+      <div class="filter-pill" onclick="setFilter(this, 'marksman')">
+       MARKSMAN
+      </div>
       <div class="filter-pill" onclick="setFilter(this, 'sniper')">
        SNIPER
       </div>
@@ -680,7 +735,7 @@
         <p class="mt-4 text-[10px] uppercase tracking-[0.35em] text-[#ff9b00]/70">settings code</p>
         <div class="mt-3 overflow-hidden rounded-[24px] border border-[#ff3b3b]/25 bg-[#0b0b0b]">
          <div class="min-h-[100px] overflow-x-auto whitespace-nowrap px-5 py-4 font-mono text-sm font-semibold text-[#ffd54f] tracking-[0.1em] text-ellipsis">
-          <span id="settingsCodeText1">7637120282838417506</span>
+          <span id="settingsCodeText1">7647131568137899812</span>
          </div>
         </div>
         <div class="mt-5">
@@ -727,6 +782,112 @@
          <button onclick="copyToClipboard(event, 'settingsCodeText3')" class="action-btn primary inline-flex h-11 items-center justify-center rounded-xl border border-[#ff3b3b] bg-black/40 px-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#ff3b3b] shadow-[0_0_18px_rgba(255,59,59,0.18)] transition duration-300 hover:border-[#ff6a6a] hover:shadow-[0_0_24px_rgba(255,59,59,0.35)] focus:outline-none focus:ring-2 focus:ring-[#ff3b3b]/40">
           <i data-lucide="copy" class="mr-2 h-5 w-5"></i> COPY
          </button>
+        </div>
+       </article>
+      </div>
+     </div>
+     <div class="gyro-section">
+      <div class="gyro-header">
+       <div class="gyro-line"></div>
+       <h3 class="gyro-title">GYROSCOPE SENSITIVITY</h3>
+      </div>
+      <div class="gyro-grid">
+       <article class="gyro-card">
+        <div class="gyro-card-title">Gyroscope Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Gyroscope Sensitivity</span><span>80 (OFF)</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Steering Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Steering Sensitivity</span><span>80</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Red Dot/Holo Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Red Dot/Holo Sensitivity</span><span>80</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">ADS Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>ADS Sensitivity</span><span>80</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Tactical Scope Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Tactical Scope Sensitivity</span><span>25</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:25%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Sniper Scope Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Sniper Scope Sensitivity</span><span>0</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:0%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Third Person Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Third Person Sensitivity</span><span>90</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:90%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">3x Tactical Scope</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>3x Tactical Scope</span><span>25</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:25%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">4x Tactical Scope</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>4x Tactical Scope</span><span>25</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:25%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">6x Tactical Scope</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>6x Tactical Scope</span><span>15</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:15%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">8x Tactical Scope</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>8x Tactical Scope</span><span>15</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:15%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Vertical Turning Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Vertical Turning Sensitivity</span><span>100</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:100%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Ground Vehicles Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Ground Vehicles Sensitivity</span><span>80</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
+        </div>
+       </article>
+       <article class="gyro-card">
+        <div class="gyro-card-title">Air Vehicles Sensitivity</div>
+        <div class="gyro-progress-wrapper">
+         <div class="gyro-progress-label"><span>Air Vehicles Sensitivity</span><span>80</span></div>
+         <div class="gyro-progress-bar"><div class="gyro-progress-fill" style="--progress:80%;"></div></div>
         </div>
        </article>
       </div>
@@ -853,15 +1014,37 @@
 const weapons = [
   { name: 'BP50', cat: 'ar', bg: 'https://imgur.com/gPApqmb.png', image: 'https://imgur.com/gPApqmb.png', damage: 85, fireRate: 75, accuracy: 72, range: 68, desc: 'Balanced assault rifle with solid all-around performance.' },
   { name: 'AK117', cat: 'ar', bg: 'https://imgur.com/eQo3sIO.png', image: 'https://imgur.com/eQo3sIO.png', damage: 88, fireRate: 70, accuracy: 68, range: 72, desc: 'High damage output with moderate recoil.' },
+  { name: 'HADES', cat: 'lmg', bg: 'https://i.imgur.com/Z2gdrEb.jpeg', image: 'https://i.imgur.com/Z2gdrEb.jpeg', damage: 92, fireRate: 58, accuracy: 70, range: 65, desc: 'Heavy light machine gun with strong sustained fire.' },
   { name: 'EM2', cat: 'ar', bg: 'https://imgur.com/t7orbUc.png', image: 'https://imgur.com/t7orbUc.png', damage: 90, fireRate: 68, accuracy: 75, range: 70, desc: 'Accurate mid-range rifle with excellent stability.' },
   { name: 'FFAR', cat: 'ar', bg: 'https://imgur.com/edNboMa.png', image: 'https://imgur.com/edNboMa.png', damage: 82, fireRate: 72, accuracy: 70, range: 65, desc: 'Reliable all-purpose assault rifle.' },
   { name: 'Kilo 141', cat: 'ar', bg: 'https://imgur.com/tUMwcou.png', image: 'https://imgur.com/tUMwcou.png', damage: 86, fireRate: 73, accuracy: 74, range: 69, desc: 'Versatile weapon for any engagement range.' },
   { name: 'M13', cat: 'ar', bg: 'https://imgur.com/TKPmDX3.png', image: 'https://imgur.com/TKPmDX3.png', damage: 78, fireRate: 80, accuracy: 85, range: 66, desc: 'High accuracy rifle with minimal recoil.' },
+  { name: 'USS9', cat: 'smg', bg: 'https://i.imgur.com/TQjkAFl.jpeg', image: 'https://i.imgur.com/TQjkAFl.jpeg', damage: 73, fireRate: 94, accuracy: 74, range: 60, desc: 'Fast-firing submachine gun built for close-quarters control.' },
+  { name: 'PPSH-41', cat: 'smg', bg: 'https://i.imgur.com/Arv0MYd.jpeg', image: 'https://i.imgur.com/Arv0MYd.jpeg', damage: 75, fireRate: 90, accuracy: 70, range: 58, desc: 'High-rate SMG with strong firepower in tight spaces.' },
+  { name: 'SWITCHBLADE X9', cat: 'smg', bg: 'https://i.imgur.com/yfdK4qT.jpeg', image: 'https://i.imgur.com/yfdK4qT.jpeg', damage: 78, fireRate: 82, accuracy: 76, range: 62, desc: 'Balanced SMG with low recoil and stable handling.' },
+  { name: 'Fennec', cat: 'smg', bg: 'https://i.imgur.com/IJakEry.jpeg', image: 'https://i.imgur.com/IJakEry.jpeg', damage: 80, fireRate: 96, accuracy: 73, range: 59, desc: 'High-speed SMG with explosive close-range potential.' },
+  { name: 'MAC-10', cat: 'smg', bg: 'https://i.imgur.com/vDh8WtI.jpeg', image: 'https://i.imgur.com/vDh8WtI.jpeg', damage: 74, fireRate: 92, accuracy: 72, range: 57, desc: 'Lightweight SMG with devastating run-and-gun performance.' },
+  { name: 'SO-14', cat: 'marksman', bg: 'https://imgur.com/fU1X34u.jpeg', image: 'https://imgur.com/fU1X34u.jpeg', damage: 88, fireRate: 46, accuracy: 94, range: 88, desc: 'Classic marksman rifle for accurate mid-long range shots.' },
+  { name: 'LACHMANN 556', cat: 'ar', bg: 'https://i.imgur.com/CKUqNjT.jpeg', image: 'https://i.imgur.com/CKUqNjT.jpeg', damage: 84, fireRate: 76, accuracy: 77, range: 71, desc: 'Reliable AR with excellent handling and steady fire.' },
+  { name: 'M4', cat: 'ar', bg: 'https://i.imgur.com/BGdld9s.jpeg', image: 'https://i.imgur.com/BGdld9s.jpeg', damage: 90, fireRate: 62, accuracy: 80, range: 73, desc: 'High damage battle rifle built for controlled bursts.' },
+  { name: 'Grau 5.56', cat: 'ar', bg: 'https://i.imgur.com/QPrOoxD.jpeg', image: 'https://i.imgur.com/QPrOoxD.jpeg', damage: 83, fireRate: 78, accuracy: 82, range: 72, desc: 'Balanced assault rifle with excellent range and recoil.' },
+  { name: 'Oden', cat: 'ar', bg: 'https://i.imgur.com/afdiYD8.jpeg', image: 'https://i.imgur.com/afdiYD8.jpeg', damage: 92, fireRate: 60, accuracy: 78, range: 74, desc: 'High-damage assault rifle with strong mid-range impact.' },
+  { name: 'BAL 27', cat: 'ar', bg: 'https://i.imgur.com/q3VgNkt.jpeg', image: 'https://i.imgur.com/q3VgNkt.jpeg', damage: 89, fireRate: 68, accuracy: 79, range: 72, desc: 'Balanced AR with reliable damage and low recoil.' },
+  { name: 'M16', cat: 'ar', bg: 'https://i.imgur.com/jJXFFKH.jpeg', image: 'https://i.imgur.com/jJXFFKH.jpeg', damage: 86, fireRate: 67, accuracy: 81, range: 71, desc: 'Durable rifle with smooth handling and steady fire.' },
+  { name: 'TYPE 19', cat: 'ar', bg: 'https://i.imgur.com/xaoTLPk.jpeg', image: 'https://i.imgur.com/xaoTLPk.jpeg', damage: 88, fireRate: 65, accuracy: 80, range: 70, desc: 'Suppressed assault rifle with powerful close-range damage.' },
+  { name: 'MADDOX', cat: 'ar', bg: 'https://i.imgur.com/afdiYD8.jpeg', image: 'https://i.imgur.com/afdiYD8.jpeg', damage: 87, fireRate: 66, accuracy: 83, range: 71, desc: 'Compact bullpup rifle with excellent mobility and control.' },
+  { name: 'AK117 LAVA REMIX', cat: 'ar', bg: 'https://i.imgur.com/iA4HYv1.jpeg', image: 'https://i.imgur.com/iA4HYv1.jpeg', damage: 85, fireRate: 79, accuracy: 80, range: 70, desc: 'Reliable classic AR with balanced stats for all situations.' },
   { name: 'DLQ33', cat: 'sniper', bg: 'https://imgur.com/VO5KAVl.png', image: 'https://imgur.com/VO5KAVl.png', damage: 95, fireRate: 40, accuracy: 98, range: 95, desc: 'One-shot sniper rifle with incredible range.' },
+  { name: 'DLQ33', cat: 'sniper', bg: 'https://i.imgur.com/8m99Qj2.jpeg', image: 'https://i.imgur.com/8m99Qj2.jpeg', damage: 94, fireRate: 42, accuracy: 97, range: 93, desc: 'Bolt-action sniper with fast follow-up shots.' },
+  { name: '3 LINE RIFLE', cat: 'sniper', bg: 'https://i.imgur.com/nRDfxgx.jpeg', image: 'https://i.imgur.com/nRDfxgx.jpeg', damage: 92, fireRate: 45, accuracy: 96, range: 92, desc: 'Precision marksman rifle for extreme long-range fire.' },
   { name: 'HSO405', cat: 'shotgun', bg: 'https://imgur.com/HIDevVc.png', image: 'https://i.imgur.com/HIDevVc.png', damage: 98, fireRate: 55, accuracy: 40, range: 20, desc: 'Devastating shotgun for close-range dominance.' },
   { name: 'KRM', cat: 'shotgun', bg: 'https://i.imgur.com/08SPbsE.png', image: 'https://i.imgur.com/08SPbsE.png', damage: 96, fireRate: 50, accuracy: 38, range: 22, desc: 'Powerful pump-action shotgun.' },
   { name: 'BY15', cat: 'shotgun', bg: 'https://i.imgur.com/69NJQKV.png', image: 'https://i.imgur.com/69NJQKV.png', damage: 94, fireRate: 60, accuracy: 42, range: 23, desc: 'Semi-auto shotgun with fast fire rate.' },
+  { name: 'JAK 12', cat: 'shotgun', bg: 'https://i.imgur.com/QGlT2Tx.jpeg', image: 'https://i.imgur.com/QGlT2Tx.jpeg', damage: 97, fireRate: 68, accuracy: 44, range: 24, desc: 'Split-barrel tactical shotgun with high close-range burst.' },
+  { name: 'HS2126', cat: 'shotgun', bg: 'https://i.imgur.com/aq6fewd.jpeg', image: 'https://i.imgur.com/aq6fewd.jpeg', damage: 92, fireRate: 64, accuracy: 46, range: 25, desc: 'Smooth-shooting shotgun with great first-shot consistency.' },
   { name: 'MW11', cat: 'pistol', bg: 'https://i.imgur.com/BaHPu4m.png', image: 'https://i.imgur.com/BaHPu4m.png', damage: 65, fireRate: 85, accuracy: 78, range: 35, desc: 'Quick secondary weapon for emergencies.' },
+  { name: 'Crossbow', cat: 'pistol', bg: 'https://i.imgur.com/V6yIH3G.jpeg', image: 'https://i.imgur.com/V6yIH3G.jpeg', damage: 70, fireRate: 88, accuracy: 80, range: 38, desc: 'Fast-firing sidearm with solid range and handling.' },
+  { name: 'J358', cat: 'pistol', bg: 'https://i.imgur.com/5fUbcqC.jpeg', image: 'https://i.imgur.com/5fUbcqC.jpeg', damage: 72, fireRate: 82, accuracy: 79, range: 37, desc: 'Tech pistol with great burst potential and mobility.' },
 ];
 
 let activeFilter = 'all';
