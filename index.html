@@ -1223,7 +1223,7 @@ function renderCards() {
   grid.innerHTML = filtered.map(w => `
     <div class="loadout-card" onclick="openModal(${weapons.indexOf(w)})">
       <div class="card-placeholder"></div>
-      <img class="card-bg loading" data-src="${w.bg}" loading="lazy" alt="${w.name} preview" onload="this.classList.remove('loading'); this.classList.add('loaded')" onerror="this.style.display='none'">
+      <img class="card-bg loading" data-src="${w.bg}" loading="lazy" alt="${w.name} preview" onload="this.previousElementSibling.style.display='none'; this.classList.remove('loading'); this.classList.add('loaded')" onerror="this.style.display='none'; this.previousElementSibling.style.display='none'">
       <div class="card-overlay"></div>
       <div class="card-info">
         <div class="card-name">${w.name}</div>
