@@ -132,7 +132,28 @@
     @media (min-width: 1024px) { .loadout-card { border-radius: 16px; } }
     .loadout-card:hover { transform: translateY(-3px); border-color: rgba(255,59,59,0.3); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
     .card-bg {
-      position: absolute; inset: 0; opacity: 0.55;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.4s ease, filter 0.4s ease;
+      background: rgba(255,255,255,0.04);
+    }
+    .card-bg.loading {
+      filter: blur(2px);
+    }
+    .card-bg.loaded {
+      opacity: 0.55;
+      filter: none;
+    }
+    .card-placeholder {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.08), rgba(0,0,0,0.15));
+      pointer-events: none;
     }
     .card-overlay {
       position: absolute; inset: 0;
@@ -1154,19 +1175,19 @@
   </div>
   <script>
 const weapons = [
-  { name: 'BP50', cat: 'ar', bg: 'https://imgur.com/gPApqmb.png', image: 'https://imgur.com/gPApqmb.png', damage: 85, fireRate: 75, accuracy: 72, range: 68, desc: 'Balanced assault rifle with solid all-around performance.' },
-  { name: 'AK117', cat: 'ar', bg: 'https://imgur.com/eQo3sIO.png', image: 'https://imgur.com/eQo3sIO.png', damage: 88, fireRate: 70, accuracy: 68, range: 72, desc: 'High damage output with moderate recoil.' },
+  { name: 'BP50', cat: 'ar', bg: 'https://i.imgur.com/gPApqmb.png', image: 'https://i.imgur.com/gPApqmb.png', damage: 85, fireRate: 75, accuracy: 72, range: 68, desc: 'Balanced assault rifle with solid all-around performance.' },
+  { name: 'AK117', cat: 'ar', bg: 'https://i.imgur.com/eQo3sIO.png', image: 'https://i.imgur.com/eQo3sIO.png', damage: 88, fireRate: 70, accuracy: 68, range: 72, desc: 'High damage output with moderate recoil.' },
   { name: 'HADES', cat: 'lmg', bg: 'https://i.imgur.com/Z2gdrEb.jpeg', image: 'https://i.imgur.com/Z2gdrEb.jpeg', damage: 92, fireRate: 58, accuracy: 70, range: 65, desc: 'Heavy light machine gun with strong sustained fire.' },
-  { name: 'EM2', cat: 'ar', bg: 'https://imgur.com/t7orbUc.png', image: 'https://imgur.com/t7orbUc.png', damage: 90, fireRate: 68, accuracy: 75, range: 70, desc: 'Accurate mid-range rifle with excellent stability.' },
-  { name: 'FFAR', cat: 'ar', bg: 'https://imgur.com/edNboMa.png', image: 'https://imgur.com/edNboMa.png', damage: 82, fireRate: 72, accuracy: 70, range: 65, desc: 'Reliable all-purpose assault rifle.' },
-  { name: 'Kilo 141', cat: 'ar', bg: 'https://imgur.com/tUMwcou.png', image: 'https://imgur.com/tUMwcou.png', damage: 86, fireRate: 73, accuracy: 74, range: 69, desc: 'Versatile weapon for any engagement range.' },
-  { name: 'M13', cat: 'ar', bg: 'https://imgur.com/TKPmDX3.png', image: 'https://imgur.com/TKPmDX3.png', damage: 78, fireRate: 80, accuracy: 85, range: 66, desc: 'High accuracy rifle with minimal recoil.' },
+  { name: 'EM2', cat: 'ar', bg: 'https://i.imgur.com/t7orbUc.png', image: 'https://i.imgur.com/t7orbUc.png', damage: 90, fireRate: 68, accuracy: 75, range: 70, desc: 'Accurate mid-range rifle with excellent stability.' },
+  { name: 'FFAR', cat: 'ar', bg: 'https://i.imgur.com/edNboMa.png', image: 'https://i.imgur.com/edNboMa.png', damage: 82, fireRate: 72, accuracy: 70, range: 65, desc: 'Reliable all-purpose assault rifle.' },
+  { name: 'Kilo 141', cat: 'ar', bg: 'https://i.imgur.com/tUMwcou.png', image: 'https://i.imgur.com/tUMwcou.png', damage: 86, fireRate: 73, accuracy: 74, range: 69, desc: 'Versatile weapon for any engagement range.' },
+  { name: 'M13', cat: 'ar', bg: 'https://i.imgur.com/TKPmDX3.png', image: 'https://i.imgur.com/TKPmDX3.png', damage: 78, fireRate: 80, accuracy: 85, range: 66, desc: 'High accuracy rifle with minimal recoil.' },
   { name: 'USS9', cat: 'smg', bg: 'https://i.imgur.com/TQjkAFl.jpeg', image: 'https://i.imgur.com/TQjkAFl.jpeg', damage: 73, fireRate: 94, accuracy: 74, range: 60, desc: 'Fast-firing submachine gun built for close-quarters control.' },
   { name: 'PPSH-41', cat: 'smg', bg: 'https://i.imgur.com/Arv0MYd.jpeg', image: 'https://i.imgur.com/Arv0MYd.jpeg', damage: 75, fireRate: 90, accuracy: 70, range: 58, desc: 'High-rate SMG with strong firepower in tight spaces.' },
   { name: 'SWITCHBLADE X9', cat: 'smg', bg: 'https://i.imgur.com/yfdK4qT.jpeg', image: 'https://i.imgur.com/yfdK4qT.jpeg', damage: 78, fireRate: 82, accuracy: 76, range: 62, desc: 'Balanced SMG with low recoil and stable handling.' },
   { name: 'Fennec', cat: 'smg', bg: 'https://i.imgur.com/IJakEry.jpeg', image: 'https://i.imgur.com/IJakEry.jpeg', damage: 80, fireRate: 96, accuracy: 73, range: 59, desc: 'High-speed SMG with explosive close-range potential.' },
   { name: 'MAC-10', cat: 'smg', bg: 'https://i.imgur.com/vDh8WtI.jpeg', image: 'https://i.imgur.com/vDh8WtI.jpeg', damage: 74, fireRate: 92, accuracy: 72, range: 57, desc: 'Lightweight SMG with devastating run-and-gun performance.' },
-  { name: 'SO-14', cat: 'marksman', bg: 'https://imgur.com/fU1X34u.jpeg', image: 'https://imgur.com/fU1X34u.jpeg', damage: 88, fireRate: 46, accuracy: 94, range: 88, desc: 'Classic marksman rifle for accurate mid-long range shots.' },
+  { name: 'SO-14', cat: 'marksman', bg: 'https://i.imgur.com/fU1X34u.jpeg', image: 'https://i.imgur.com/fU1X34u.jpeg', damage: 88, fireRate: 46, accuracy: 94, range: 88, desc: 'Classic marksman rifle for accurate mid-long range shots.' },
   { name: 'LACHMANN 556', cat: 'ar', bg: 'https://i.imgur.com/CKUqNjT.jpeg', image: 'https://i.imgur.com/CKUqNjT.jpeg', damage: 84, fireRate: 76, accuracy: 77, range: 71, desc: 'Reliable AR with excellent handling and steady fire.' },
   { name: 'M4', cat: 'ar', bg: 'https://i.imgur.com/BGdld9s.jpeg', image: 'https://i.imgur.com/BGdld9s.jpeg', damage: 90, fireRate: 62, accuracy: 80, range: 73, desc: 'High damage battle rifle built for controlled bursts.' },
   { name: 'Grau 5.56', cat: 'ar', bg: 'https://i.imgur.com/QPrOoxD.jpeg', image: 'https://i.imgur.com/QPrOoxD.jpeg', damage: 83, fireRate: 78, accuracy: 82, range: 72, desc: 'Balanced assault rifle with excellent range and recoil.' },
@@ -1176,10 +1197,10 @@ const weapons = [
   { name: 'TYPE 19', cat: 'ar', bg: 'https://i.imgur.com/xaoTLPk.jpeg', image: 'https://i.imgur.com/xaoTLPk.jpeg', damage: 88, fireRate: 65, accuracy: 80, range: 70, desc: 'Suppressed assault rifle with powerful close-range damage.' },
   { name: 'MADDOX', cat: 'ar', bg: 'https://i.imgur.com/afdiYD8.jpeg', image: 'https://i.imgur.com/afdiYD8.jpeg', damage: 87, fireRate: 66, accuracy: 83, range: 71, desc: 'Compact bullpup rifle with excellent mobility and control.' },
   { name: 'AK117 LAVA REMIX', cat: 'ar', bg: 'https://i.imgur.com/iA4HYv1.jpeg', image: 'https://i.imgur.com/iA4HYv1.jpeg', damage: 85, fireRate: 79, accuracy: 80, range: 70, desc: 'Reliable classic AR with balanced stats for all situations.' },
-  { name: 'DLQ33', cat: 'sniper', bg: 'https://imgur.com/VO5KAVl.png', image: 'https://imgur.com/VO5KAVl.png', damage: 95, fireRate: 40, accuracy: 98, range: 95, desc: 'One-shot sniper rifle with incredible range.' },
+  { name: 'DLQ33', cat: 'sniper', bg: 'https://i.imgur.com/VO5KAVl.png', image: 'https://i.imgur.com/VO5KAVl.png', damage: 95, fireRate: 40, accuracy: 98, range: 95, desc: 'One-shot sniper rifle with incredible range.' },
   { name: 'DLQ33', cat: 'sniper', bg: 'https://i.imgur.com/8m99Qj2.jpeg', image: 'https://i.imgur.com/8m99Qj2.jpeg', damage: 94, fireRate: 42, accuracy: 97, range: 93, desc: 'Bolt-action sniper with fast follow-up shots.' },
   { name: '3 LINE RIFLE', cat: 'sniper', bg: 'https://i.imgur.com/nRDfxgx.jpeg', image: 'https://i.imgur.com/nRDfxgx.jpeg', damage: 92, fireRate: 45, accuracy: 96, range: 92, desc: 'Precision marksman rifle for extreme long-range fire.' },
-  { name: 'HSO405', cat: 'shotgun', bg: 'https://imgur.com/HIDevVc.png', image: 'https://i.imgur.com/HIDevVc.png', damage: 98, fireRate: 55, accuracy: 40, range: 20, desc: 'Devastating shotgun for close-range dominance.' },
+  { name: 'HSO405', cat: 'shotgun', bg: 'https://i.imgur.com/HIDevVc.png', image: 'https://i.imgur.com/HIDevVc.png', damage: 98, fireRate: 55, accuracy: 40, range: 20, desc: 'Devastating shotgun for close-range dominance.' },
   { name: 'KRM', cat: 'shotgun', bg: 'https://i.imgur.com/08SPbsE.png', image: 'https://i.imgur.com/08SPbsE.png', damage: 96, fireRate: 50, accuracy: 38, range: 22, desc: 'Powerful pump-action shotgun.' },
   { name: 'BY15', cat: 'shotgun', bg: 'https://i.imgur.com/69NJQKV.png', image: 'https://i.imgur.com/69NJQKV.png', damage: 94, fireRate: 60, accuracy: 42, range: 23, desc: 'Semi-auto shotgun with fast fire rate.' },
   { name: 'JAK 12', cat: 'shotgun', bg: 'https://i.imgur.com/QGlT2Tx.jpeg', image: 'https://i.imgur.com/QGlT2Tx.jpeg', damage: 97, fireRate: 68, accuracy: 44, range: 24, desc: 'Split-barrel tactical shotgun with high close-range burst.' },
@@ -1201,7 +1222,8 @@ function renderCards() {
   });
   grid.innerHTML = filtered.map(w => `
     <div class="loadout-card" onclick="openModal(${weapons.indexOf(w)})">
-      <div class="card-bg" style="background-image: url('${w.bg}'); background-size: cover; background-position: center;"></div>
+      <div class="card-placeholder"></div>
+      <img class="card-bg loading" data-src="${w.bg}" loading="lazy" alt="${w.name} preview" onload="this.classList.remove('loading'); this.classList.add('loaded')" onerror="this.style.display='none'">
       <div class="card-overlay"></div>
       <div class="card-info">
         <div class="card-name">${w.name}</div>
@@ -1209,7 +1231,38 @@ function renderCards() {
       </div>
     </div>
   `).join('');
+  initLazyCardImages();
   lucide.createIcons();
+}
+
+function initLazyCardImages() {
+  const lazyImages = document.querySelectorAll('.card-bg[data-src]');
+  if (!('IntersectionObserver' in window)) {
+    lazyImages.forEach(img => {
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    });
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const img = entry.target;
+      if (!img.dataset.src) {
+        obs.unobserve(img);
+        return;
+      }
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+      obs.unobserve(img);
+    });
+  }, {
+    rootMargin: '200px',
+    threshold: 0.1
+  });
+
+  lazyImages.forEach(img => observer.observe(img));
 }
 
 function setFilter(el, cat) {
