@@ -597,6 +597,10 @@
     }
     .modal-close:hover { background: rgba(255,59,59,0.1); border-color: rgba(255,59,59,0.3); }
     .modal-close i { width: 18px; height: 18px; }
+    .modal-close.close-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .action-btn[disabled] {
+      opacity: 0.55; cursor: not-allowed; pointer-events: none;
+    }
     .modal-image {
       width: 100%; border-radius: 16px; background: rgba(0,0,0,0.3);
       border: 1px solid rgba(255,59,59,0.2); margin-bottom: 20px;
@@ -1167,10 +1171,47 @@
     </div>
    </div>
   </div>
-  <div class="modal" id="giftModal">
-   <div class="modal-content" style="max-width: 600px;"><button class="modal-close" onclick="closeGiftModal()"><i data-lucide="x"></i></button>
-    <div class="modal-image" id="giftImage" style="min-height: 400px;"></div>
-    <div class="gift-text-overlay" id="giftTextOverlay">Direct Gifts Here, Thank you</div>
+  <div class="modal" id="gearUpModal" aria-hidden="true">
+   <div class="modal-content" style="max-width: 600px;">
+    <button class="modal-close close-hidden" id="gearUpCloseBtn" onclick="closeGearUpModal()" aria-label="Close modal"><i data-lucide="x"></i></button>
+    <div class="modal-title">🎉 Claim Your Free 7days GearUP Trial</div>
+    <div class="modal-image" id="gearUpImage" style="min-height: 280px; padding: 12px; display:flex;align-items:center;justify-content:center;text-align:center;">
+     <a id="gearUpImageLink" href="https://gearup.onelink.me/Zmq0/0qq0jxsj" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+      <img src="https://i.imgur.com/wFjrrk2.png" alt="GearUP Trial" style="width:80%;max-width:420px;height:auto;object-fit:cover;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.22);" />
+     </a>
+    </div>
+    <p style="color: #ff4d4d; line-height: 1.4; margin: 20px 0 12px; font-size: 1.1rem; text-align: center; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 77, 77, 0.85), 0 0 18px rgba(255, 77, 77, 0.45);">
+    CODE: VENGE
+    </p>
+    <p style="color: #b7b7b7; line-height: 1.65; margin: 0 0 24px; font-size: 0.85rem; text-align: center;">
+     ⚠️ New users only. This offer is valid only for first-time GearUP installations. If GearUP has previously been installed on your device or account, the free trial may not apply.
+    </p>
+    <div class="modal-actions" style="display:flex; gap: 14px; flex-wrap: wrap; justify-content: flex-end;">
+     <a id="gearUpReferralBtn" href="https://gearup.com/referral/free-trial" target="_blank" rel="noopener noreferrer" class="action-btn primary" style="flex:1 1 180px; min-width: 140px; padding: 14px 18px; font-size: 0.95rem;">
+      Get Free Trial
+     </a>
+     <button class="action-btn" id="gearUpMaybeLaterBtn" type="button" disabled style="flex:1 1 140px; min-width: 140px; padding: 14px 18px; font-size: 0.95rem;" onclick="closeGearUpModal()">
+      Maybe Later
+     </button>
+    </div>
+    <div id="gearUpCountdownNote" style="font-size: 0.78rem; color: #888; margin-top: 18px; text-align: right;">
+     Close available in 5s
+    </div>
+   </div>
+  </div>
+  <div class="modal" id="giftModal" aria-hidden="true">
+   <div class="modal-content" style="max-width: 520px;">
+    <button class="modal-close" onclick="closeGiftModal()" aria-label="Close modal"><i data-lucide="x"></i></button>
+    <div class="modal-title">🎁 Gift Inbox</div>
+    <div class="modal-image" style="min-height: 220px; display:flex;align-items:center;justify-content:center;font-size: 3rem; padding: 12px;">
+     <img src="https://i.imgur.com/6LfaxTH.jpeg" alt="Gift" style="width:100%;height:auto;object-fit:cover;border-radius:14px;" />
+    </div>
+    <p style="color: #ddd; line-height: 1.75; margin: 20px 0 12px; font-size: 0.95rem;">
+     Direct Gifts Here, Thank You
+    </p>
+    <button class="action-btn primary" type="button" onclick="closeGiftModal()" style="width:100%; padding: 14px 18px; font-size: 0.95rem;">
+     Maybe, Next Time
+    </button>
    </div>
   </div>
   <script>
@@ -1287,31 +1328,63 @@ function switchTabFromSettings() {
   switchTab(loadoutsTab, 'loadouts');
 }
 
+let gearUpCloseTimer = null;
+let gearUpCloseEnabled = false;
+const gearUpReferralUrl = 'https://gearup.onelink.me/Zmq0/0qq0jxsj';
+
+function openGearUpModal() {
+  const gearUpModal = document.getElementById('gearUpModal');
+  const gearUpImage = document.getElementById('gearUpImage');
+  const gearUpCloseBtn = document.getElementById('gearUpCloseBtn');
+  const gearUpCountdownNote = document.getElementById('gearUpCountdownNote');
+  const maybeLaterBtn = document.getElementById('gearUpMaybeLaterBtn');
+  const referralBtn = document.getElementById('gearUpReferralBtn');
+  if (!gearUpModal || !gearUpImage || !gearUpCloseBtn || !gearUpCountdownNote || !maybeLaterBtn || !referralBtn) return;
+
+  gearUpCloseEnabled = false;
+  if (gearUpCloseTimer) clearInterval(gearUpCloseTimer);
+
+  gearUpCloseBtn.classList.add('close-hidden');
+  gearUpCloseBtn.disabled = true;
+  maybeLaterBtn.disabled = true;
+  gearUpCountdownNote.textContent = 'Close available in 5s';
+
+  gearUpImage.innerHTML = `
+    <a id="gearUpImageLink" href="${gearUpReferralUrl}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+      <img src="https://i.imgur.com/wFjrrk2.png" alt="GearUP Trial" style="width:100%;height:auto;object-fit:cover;border-radius:12px;" />
+    </a>
+  `;
+  gearUpImage.classList.remove('landscape', 'portrait', 'square');
+  gearUpImage.style.fontSize = '';
+  gearUpImage.style.color = '';
+  gearUpImage.style.justifyContent = '';
+  gearUpImage.style.textAlign = '';
+  gearUpImage.style.padding = '16px';
+  gearUpImage.style.background = 'rgba(0,0,0,0.0)';
+
+  referralBtn.href = gearUpReferralUrl;
+  gearUpModal.classList.add('active');
+
+  let remaining = 5;
+  gearUpCloseTimer = setInterval(() => {
+    remaining -= 1;
+    if (remaining > 0) {
+      gearUpCountdownNote.textContent = `Close available in ${remaining}s`;
+    } else {
+      clearInterval(gearUpCloseTimer);
+      gearUpCloseEnabled = true;
+      gearUpCloseBtn.classList.remove('close-hidden');
+      gearUpCloseBtn.disabled = false;
+      maybeLaterBtn.disabled = false;
+      gearUpCountdownNote.textContent = 'You can close this offer now.';
+    }
+  }, 1000);
+}
+
 function openGiftModal() {
-  const giftImage = document.getElementById('giftImage');
-  giftImage.innerHTML = '';
-  giftImage.classList.remove('landscape', 'portrait', 'square');
-
-  const img = document.createElement('img');
-  img.src = 'https://i.imgur.com/6LfaxTH.png';
-  img.alt = 'Gift';
-  img.loading = 'lazy';
-  img.onerror = function() {
-    console.error('Image failed to load:', this.src);
-    this.style.display = 'none';
-    giftImage.textContent = '🎁';
-    giftImage.style.fontSize = '8rem';
-  };
-
-  giftImage.appendChild(img);
-  giftImage.classList.add('landscape');
-
-  const giftText = document.getElementById('giftTextOverlay');
-  if (giftText) {
-    giftText.textContent = 'Direct Gifts Here, Thank you';
-  }
-  giftImage.style.background = 'rgba(0,0,0,0.3)';
-  document.getElementById('giftModal').classList.add('active');
+  const giftModal = document.getElementById('giftModal');
+  if (!giftModal) return;
+  giftModal.classList.add('active');
 }
 
 function openModal(index) {
@@ -1352,12 +1425,22 @@ function closeGiftModal() {
   document.getElementById('giftModal').classList.remove('active');
 }
 
+function closeGearUpModal() {
+  if (!gearUpCloseEnabled) return;
+  if (gearUpCloseTimer) clearInterval(gearUpCloseTimer);
+  document.getElementById('gearUpModal').classList.remove('active');
+}
+
 document.getElementById('weaponModal').addEventListener('click', (e) => {
   if (e.target.id === 'weaponModal') closeModal();
 });
 
 document.getElementById('giftModal').addEventListener('click', (e) => {
   if (e.target.id === 'giftModal') closeGiftModal();
+});
+
+document.getElementById('gearUpModal').addEventListener('click', (e) => {
+  if (e.target.id === 'gearUpModal' && gearUpCloseEnabled) closeGearUpModal();
 });
 
 function copyToClipboard(evt, targetOrText) {
@@ -1421,6 +1504,7 @@ function selectFOV(card, fovType) {
 
 renderCards();
 lucide.createIcons();
+setTimeout(openGearUpModal, 250);
 
 function setupSlider(contentId, textId) {
   const content = document.getElementById(contentId);
