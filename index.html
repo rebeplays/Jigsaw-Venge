@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jigsaw Venge</title>
   <link rel="icon" href="https://i.imgur.com/PbBQONV.png">
+  <link rel="dns-prefetch" href="//i.imgur.com">
   <link rel="preconnect" href="https://i.imgur.com" crossorigin>
-  <link rel="preload" as="image" href="https://i.imgur.com/wFjrrk2.png">
-  <link rel="preload" as="image" href="https://i.imgur.com/6LfaxTH.jpeg">
-  <link rel="prefetch" as="image" href="https://i.imgur.com/gPApqmb.png">
+  <link rel="preload" as="image" href="https://i.imgur.com/08SPbsE.png" fetchpriority="high">
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1429,6 +1428,7 @@
   .weapon-modal-media::before { content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px); background-size:42px 42px; mask-image:linear-gradient(to bottom,#000,transparent 94%); }
   .weapon-modal-index { position:absolute; z-index:10; top:22px; left:24px; display:inline-flex; align-items:center; justify-content:center; min-width:72px; height:58px; padding:0 14px; color:#fff; background:rgba(7,7,9,.88); border:1px solid rgba(255,49,49,.52); border-radius:14px; font-size:clamp(1.65rem,3.2vw,2.65rem); font-weight:900; line-height:1; letter-spacing:-.04em; text-shadow:0 0 16px rgba(255,255,255,.16); box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 20px rgba(255,49,49,.14); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
   .weapon-modal-media img { position:relative; z-index:2; width:min(91%,760px); max-height:76vh; object-fit:contain; filter:drop-shadow(0 32px 42px rgba(0,0,0,.64)); }
+  .weapon-modal-media img.modal-image-loading { filter:blur(1.5px) saturate(.9) drop-shadow(0 32px 42px rgba(0,0,0,.64)); opacity:.92; }
   .weapon-modal-media img.weapon-modal-image-enter { animation:weaponModalImageIn .48s cubic-bezier(.2,.8,.2,1); }
   @keyframes weaponModalImageIn { from { opacity:0; transform:translateY(14px) scale(.965); filter:blur(5px) drop-shadow(0 20px 30px rgba(0,0,0,.4)); } to { opacity:1; transform:none; filter:blur(0) drop-shadow(0 32px 42px rgba(0,0,0,.64)); } }
   .weapon-modal-scan { position:absolute; z-index:3; left:0; right:0; top:22%; height:1px; background:linear-gradient(90deg,transparent,var(--red),transparent); opacity:.35; box-shadow:0 0 18px rgba(255,49,49,.55); animation:weaponModalScan 4.2s linear infinite; }
@@ -1478,7 +1478,7 @@
     <div class="jv-hero-grid">
      <div class="jv-hero-copy">
       <div class="jv-eyebrow"><span></span> COD MOBILE LOADOUT LAB</div>
-      <h1 id="jvHeroTitle">LEAP<br><em>VENGE</em></h1>
+      <h1 id="jvHeroTitle">LEAP<br><em>VENGE.</em></h1>
       <p>Explore Jigsaw Venge loadouts, weapon classes, mods, sensitivity and gameplay settings in one clean dashboard.</p>
       <div class="jv-hero-actions">
        <button type="button" class="jv-btn jv-btn-primary" onclick="document.getElementById('searchInput')?.focus(); document.getElementById('loadoutsSection')?.scrollIntoView({behavior:'smooth',block:'start'});"><i data-lucide="crosshair"></i> EXPLORE LOADOUTS</button>
@@ -1493,7 +1493,7 @@
      <div class="jv-featured-card" role="button" tabindex="0" aria-label="Open featured KRM loadout" onclick="openWeaponModal(26)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWeaponModal(26);}">
       <div class="jv-featured-top"><span>FEATURED BUILD</span><b>27</b></div>
       <div class="jv-featured-art">
-       <img src="https://i.imgur.com/08SPbsE.png" alt="Featured KRM loadout" decoding="async" referrerpolicy="no-referrer" onerror="weaponImageFallback(this)">
+       <img src="https://i.imgur.com/08SPbsE.png" alt="Featured KRM loadout" loading="eager" fetchpriority="high" decoding="async" referrerpolicy="no-referrer" onerror="weaponImageFallback(this)">
        <div class="jv-crosshair"><span></span><span></span></div>
       </div>
       <div class="jv-featured-info">
@@ -2052,6 +2052,63 @@ const weapons = [
 
 let activeFilter = 'all';
 
+// ---------- FAST IMAGE LOADING ----------
+// Keep the original URLs in the weapons array, but use smaller Imgur derivatives
+// for cards. Full images are preloaded only when they are likely to be opened.
+const weaponImageCache = new Map();
+let weaponCardPreloadObserver = null;
+
+function getImgurThumbnail(url, size = 'l') {
+  if (!url || !/i\.imgur\.com/i.test(url)) return url;
+  // Imgur thumbnail suffixes are inserted before the extension.
+  // l = max 640px, h = max 1024px.
+  return url.replace(/(https?:\/\/i\.imgur\.com\/[^.?/#]+)(\.[a-z0-9]+)(\?.*)?$/i, `$1${size}$2$3`);
+}
+
+function preloadImage(url, priority = 'auto') {
+  if (!url) return Promise.reject(new Error('Missing image URL'));
+  if (weaponImageCache.has(url)) return weaponImageCache.get(url);
+
+  const promise = new Promise((resolve, reject) => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer';
+    try { img.fetchPriority = priority; } catch (_) {}
+    img.onload = () => resolve(url);
+    img.onerror = reject;
+    img.src = url;
+  });
+
+  weaponImageCache.set(url, promise);
+  promise.catch(() => weaponImageCache.delete(url));
+  return promise;
+}
+
+function preloadWeaponImage(index, priority = 'auto') {
+  const weapon = weapons[index];
+  if (!weapon) return;
+  const fullSrc = weapon.image || weapon.bg;
+  preloadImage(fullSrc, priority).catch(() => {});
+}
+
+function observeWeaponCardsForPreload() {
+  if (weaponCardPreloadObserver) weaponCardPreloadObserver.disconnect();
+  if (!('IntersectionObserver' in window)) return;
+
+  weaponCardPreloadObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const index = Number(entry.target.dataset.weaponIndex);
+      if (Number.isFinite(index)) preloadWeaponImage(index, 'low');
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '420px 0px', threshold: 0.01 });
+
+  document.querySelectorAll('.loadout-card[data-weapon-index]').forEach(card => {
+    weaponCardPreloadObserver.observe(card);
+  });
+}
+
 function weaponImageFallback(img) {
   if (!img || img.dataset.fallbackApplied === '1') return;
   img.dataset.fallbackApplied = '1';
@@ -2095,12 +2152,24 @@ function renderCards() {
     const matchSearch = w.name.toLowerCase().includes(search);
     return matchCat && matchSearch;
   });
-  grid.innerHTML = filtered.map(w => {
+
+  grid.innerHTML = filtered.map((w, visibleIndex) => {
     const weaponIndex = weapons.indexOf(w);
+    const cardSrc = getImgurThumbnail(w.bg, 'l');
+    const eager = visibleIndex < 8;
     return `
-    <button type="button" class="loadout-card" data-weapon-index="${weaponIndex}" onclick="openWeaponModal(${weaponIndex}, this)" aria-label="Open ${w.name} loadout">
+    <button type="button" class="loadout-card" data-weapon-index="${weaponIndex}"
+      onclick="openWeaponModal(${weaponIndex}, this)"
+      onmouseenter="preloadWeaponImage(${weaponIndex}, 'high')"
+      onfocus="preloadWeaponImage(${weaponIndex}, 'high')"
+      ontouchstart="preloadWeaponImage(${weaponIndex}, 'high')"
+      aria-label="Open ${w.name} loadout">
       <div class="card-placeholder"></div>
-      <img class="card-bg loading" src="${w.bg}" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="${w.name} preview" onload="this.previousElementSibling.style.display='none'; this.classList.remove('loading'); this.classList.add('loaded')" onerror="weaponImageFallback(this)">
+      <img class="card-bg loading" src="${cardSrc}" ${eager ? 'loading="eager"' : 'loading="lazy"'}
+        ${eager ? 'fetchpriority="high"' : 'fetchpriority="low"'} decoding="async" referrerpolicy="no-referrer"
+        alt="${w.name} preview"
+        onload="this.previousElementSibling.style.display='none'; this.classList.remove('loading'); this.classList.add('loaded')"
+        onerror="weaponImageFallback(this)">
       <div class="card-overlay"></div>
       <div class="card-topline"><span>${w.cat.toUpperCase()}</span><i data-lucide="arrow-up-right"></i></div>
       <div class="card-info">
@@ -2109,6 +2178,8 @@ function renderCards() {
       </div>
     </button>`;
   }).join('');
+
+  observeWeaponCardsForPreload();
   if (window.lucide) lucide.createIcons();
 }
 
@@ -2179,23 +2250,52 @@ function openWeaponModal(index, sourceCard) {
   const indexEl = document.getElementById('weaponModalIndex');
   if (!modal || !image || !name || !category || !indexEl) return;
 
+  const fullSrc = weapon.image || weapon.bg;
+  const previewSrc = getImgurThumbnail(fullSrc, 'l');
+
   name.textContent = weapon.name;
   category.textContent = weapon.cat.toUpperCase();
   indexEl.textContent = String(index + 1).padStart(2, '0');
 
+  // Open the modal immediately. The lightweight card-sized preview appears first,
+  // while the original image finishes loading in the background.
+  image.dataset.weaponSrc = fullSrc;
   image.dataset.fallbackApplied = '';
-  image.onerror = () => weaponImageFallback(image);
   image.alt = `${weapon.name} loadout`;
   image.referrerPolicy = 'no-referrer';
   image.classList.remove('weapon-modal-image-enter');
-  image.src = weapon.image || weapon.bg;
-  void image.offsetWidth;
-  image.classList.add('weapon-modal-image-enter');
+  image.classList.add('modal-image-loading');
+
+  image.onerror = () => {
+    // If an Imgur thumbnail derivative fails, retry the original before fallback.
+    if (image.src !== fullSrc && image.dataset.weaponSrc === fullSrc) {
+      image.onerror = () => weaponImageFallback(image);
+      image.src = fullSrc;
+    } else {
+      weaponImageFallback(image);
+    }
+  };
+  image.src = previewSrc;
 
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
   document.getElementById('weaponModalClose')?.focus({preventScroll:true});
+
+  // Full image is usually already cached by viewport/hover/touch preloading.
+  preloadImage(fullSrc, 'high').then(() => {
+    if (image.dataset.weaponSrc !== fullSrc) return;
+    image.onerror = () => weaponImageFallback(image);
+    image.src = fullSrc;
+    image.classList.remove('modal-image-loading');
+    void image.offsetWidth;
+    image.classList.add('weapon-modal-image-enter');
+  }).catch(() => {
+    if (image.dataset.weaponSrc === fullSrc && image.src === previewSrc) {
+      image.classList.remove('modal-image-loading');
+    }
+  });
+
   if (window.lucide) lucide.createIcons();
 }
 
@@ -2268,7 +2368,21 @@ function selectFOV(card, fovType) {
 
 renderCards();
 const defaultWeaponIndex = weapons.findIndex(w => w.name === 'KRM');
-// KRM stays featured, but no modal opens automatically.
+// KRM is featured, so cache its full image immediately.
+if (defaultWeaponIndex >= 0) preloadWeaponImage(defaultWeaponIndex, 'high');
+
+// Warm up a few first-screen full images after the browser has finished urgent work.
+const warmVisibleWeaponImages = () => {
+  document.querySelectorAll('.loadout-card[data-weapon-index]').forEach((card, i) => {
+    if (i < 4) preloadWeaponImage(Number(card.dataset.weaponIndex), 'low');
+  });
+};
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(warmVisibleWeaponImages, { timeout: 1800 });
+} else {
+  setTimeout(warmVisibleWeaponImages, 900);
+}
+
 if (window.lucide) lucide.createIcons();
 
 function setupSlider(contentId, textId) {
